@@ -88,4 +88,8 @@ router.get("/", async(req,res) => {
     res.render("home");
 })
 
+router.get("/chat", async(req,res) => {
+   res.render("chat");
+})
+
 module.exports = router;
