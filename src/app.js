@@ -1,4 +1,4 @@
-//** 3ra pre entrega */
+//** TP FINAL */
 // alumno : JAVIER LEZCANO 
 // comision: 50045
 
@@ -57,52 +57,12 @@ app.use("/api/users", userRouter);
 app.use("/", viewsRouter);
 
 
-
-
-
-
-
-// ruta para registrar usuario
-app.get("/register", (req,res) => {
-    res.render("register");
-})
-
-app.get("/login", (req,res) => {
-    res.render("login");
-})
-
-
 //guardar una referencia de express 
 const httpServer = app.listen(PUERTO, () => {
     console.log(`escuchando en el puerto : ${PUERTO}` );
 })
 
-//pasos para trabajar con sockets.io
-// 1) instalar socket.io : npm install socket.io
-//2) importamos el modulo:  const socket = require("socket.io")
-//configuramos:
-//const io = socket(httpServer);
 
-//chat
-
-const MessageModel = require("./models/message.model.js");
-const io = new socket.Server(httpServer);
-
-io.on("connection",  (socket) => {
-    console.log("Nuevo usuario conectado");
-
-    socket.on("message", async data => {
-
-        //Guardo el mensaje en MongoDB: 
-        await MessageModel.create(data);
-
-        //Obtengo los mensajes de MongoDB y se los paso al cliente: 
-        const messages = await MessageModel.find();
-        console.log(messages);
-        io.sockets.emit("message", messages);
-
-    })
-})
 
 const SocketManager = require("./websocket/socketmanager.js");
 new SocketManager(httpServer);
