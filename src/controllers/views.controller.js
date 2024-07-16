@@ -83,6 +83,42 @@ class ViewsController {
 
     }
 
+   async renderCarts(req,res) {
+      const cartId = req.params.cid;
+   
+    try {
+      const carrito = await cartRepository.GetProductsCart(cartId)//.populate("products");
+      console.log(JSON.stringify(carrito, null, 2));
+      if (!carrito) {
+         console.log("No existe ese carrito con el id");
+         return res.status(404).json({ error: "Carrito no encontrado" });
+      }
+      let totalCompra = 0;
+      const productosEnCarrito = carrito.products.map(item => {
+        const product = item.product.toObject();
+        const quantity = item.quantity;
+        const totalPrice = product.price * quantity;
+        totalCompra += totalPrice;
+        return {
+         product: { ...product, totalPrice},
+         quantity,
+         cartId
+        };
+         
+      }
+   );
+
+
+
+      res.render("carts", { productos : productosEnCarrito, totalCompra, cartId });
+   } catch (error) {
+      console.error("Error al obtener el carrito", error);
+      res.status(500).json({ error: "Error interno del servidor" });
+   }
+    
+      
+    }
+
 }
 
 module.exports = ViewsController;
